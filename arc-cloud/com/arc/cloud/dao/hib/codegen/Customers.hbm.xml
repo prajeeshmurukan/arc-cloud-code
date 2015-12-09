@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 11-Nov-2015 9:38:25 AM by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="com.arc.cloud.dao.hib.codegen.Customers" table="customers" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="organization" class="com.arc.cloud.dao.hib.codegen.Organization" fetch="select">
+            <column name="orgid" />
+        </many-to-one>
+        <property name="firstname" type="string">
+            <column name="firstname" />
+        </property>
+        <property name="lastname" type="string">
+            <column name="lastname" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" />
+        </property>
+        <property name="phone" type="string">
+            <column name="phone" length="100" />
+        </property>
+        <property name="username" type="string">
+            <column name="username" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" />
+        </property>
+        <property name="passwordHash" type="string">
+            <column name="password_hash" length="50" not-null="true" />
+        </property>
+        <set name="inboxes" table="inbox" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="custid" />
+            </key>
+            <one-to-many class="com.arc.cloud.dao.hib.codegen.Inbox" />
+        </set>
+    </class>
+</hibernate-mapping>

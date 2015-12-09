@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4-Dec-2015 8:37:10 PM by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="com.arc.cloud.dao.hib23.hib.codegen.Projecttaxonomy" table="projecttaxonomy" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="organization" class="com.arc.cloud.dao.hib23.hib.codegen.Organization" fetch="select">
+            <column name="orgid" />
+        </many-to-one>
+        <property name="projectname" type="string">
+            <column name="projectname" />
+        </property>
+        <property name="projectdesc" type="string">
+            <column name="projectdesc" />
+        </property>
+        <property name="taxonomylevel1" type="string">
+            <column name="taxonomylevel1" />
+        </property>
+        <property name="taxonomylevel2" type="string">
+            <column name="taxonomylevel2" />
+        </property>
+    </class>
+</hibernate-mapping>

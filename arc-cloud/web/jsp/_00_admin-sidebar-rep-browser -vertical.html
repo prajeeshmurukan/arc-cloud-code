@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link type="text/css" rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/d3.v3.min.js"></script>
+
+    
+
+    <link href="../css/metro.css" rel="stylesheet">
+    <link href="../css/metro-icons.css" rel="stylesheet">
+    <link href="../css/metro-responsive.css" rel="stylesheet">
+
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/jquery.dataTables.min.js"></script>
+
+    <script src="../js/metro.js"></script>
+
+    <style>
+        
+        .divscroll{
+            height:100%;
+            width:800x;
+            /* background-color:#CCC; */		
+            overflow-y:auto;
+            float:left;
+            position:relative;
+            margin-left:-5px;
+        
+        }
+        
+        
+      body{
+            background:#aae;
+        }
+        .node {
+            cursor: pointer;
+        }
+
+            .node circle {
+                /*fill: #fff;
+                stroke: steelblue;*/
+                stroke-width: 2px;
+            }
+
+            .node text {
+                font: 9px sans-serif;
+                fill: black;
+            }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 3px;
+        }
+
+        .tree {
+            margin-bottom: 10px;
+            overflow: scroll;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+        }
+        .page-content {
+            padding-top: 3.125rem;
+            min-height: 100%;
+            height: 100%;
+        }
+        .table .input-control.checkbox {
+            line-height: 1;
+            min-height: 0;
+            height: auto;
+        }
+
+        @media screen and (max-width: 800px){
+            #cell-sidebar {
+                flex-basis: 52px;
+            }
+            #cell-content {
+                flex-basis: calc(100% - 52px);
+            }
+        }
+    </style>
+
+    <script>
+        function pushMessage(t){
+            var mes = 'Info|Implement independently';
+            $.Notify({
+                caption: mes.split("|")[0],
+                content: mes.split("|")[1],
+                type: t
+            });
+        }
+
+        $(function(){
+            $('.sidebar').on('click', 'li', function(){
+                if (!$(this).hasClass('active')) {
+                    $('.sidebar li').removeClass('active');
+                    $(this).addClass('active');
+                }
+            })
+        })
+		
+    </script>
+	<script>
+    function showDialog(id){
+        var dialog = $(id).data('dialog');
+        dialog.open();
+    }
+	
+	    function showhglass(id){
+        var dialog = $(id).data('hglass');
+        dialog.open();
+    }
+	
+	  $(document).ready(function () {
+          
+
+                            
+                            
+            //build tree
+            function BuildVerticaLTree(treeData, treeContainerDom) {
+                var margin = { top: 40, right: 120, bottom: 20, left: 120 };
+                var width = 960 - margin.right - margin.left;
+                var height = 700 - margin.top - margin.bottom;
+
+                var i = 0, duration = 750;
+                var tree = d3.layout.tree()
+                    .size([height, width]);
+                var diagonal = d3.svg.diagonal()
+                    .projection(function (d) { return [d.x, d.y]; });
+                var svg = d3.select(treeContainerDom).append("svg")
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                root = treeData;
+
+                
+                update(root);
+                function update(source) {
+                    // Compute the new tree layout.
+                    var nodes = tree.nodes(root).reverse(),
+                        links = tree.links(nodes);
+                    // Normalize for fixed-depth.
+                    nodes.forEach(function (d) { d.y = d.depth * 100; });
+                    // Declare the nodes…
+                    var node = svg.selectAll("g.node")
+                        .data(nodes, function (d) { return d.id || (d.id = ++i); });
+                    // Enter the nodes.
+                    var nodeEnter = node.enter().append("g")
+                        .attr("class", "node")
+                        .attr("transform", function (d) {
+                            return "translate(" + source.x0 + "," + source.y0 + ")";
+                        }).on("click", nodeclick);
+                    nodeEnter.append("circle")
+                     .attr("r", 10)
+                        .attr("stroke", function (d) { return d.children || d._children ? "steelblue" : "#00c13f"; })
+                        .style("fill", function (d) { return d.children || d._children ? "lightsteelblue" : "#fff"; });
+                    //.attr("r", 10)
+                    //.style("fill", "#fff");
+                    nodeEnter.append("text")
+                        .attr("y", function (d) {
+                            return d.children || d._children ? -18 : 18;
+                        })
+                        .attr("dy", ".35em")
+                        .attr("text-anchor", "middle")
+                        .text(function (d) { return d.name; })
+                        .style("fill-opacity", 1e-6);
+                    // Transition nodes to their new position.
+                    //horizontal tree
+                    var nodeUpdate = node.transition()
+                        .duration(duration)
+                        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+                    nodeUpdate.select("circle")
+                        .attr("r", 10)
+                        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+                    nodeUpdate.select("text")
+                        .style("fill-opacity", 1);
+
+
+                    // Transition exiting nodes to the parent's new position.
+                    var nodeExit = node.exit().transition()
+                        .duration(duration)
+                        .attr("transform", function (d) { return "translate(" + source.x + "," + source.y + ")"; })
+                        .remove();
+                    nodeExit.select("circle")
+                        .attr("r", 1e-6);
+                    nodeExit.select("text")
+                        .style("fill-opacity", 1e-6);
+                    // Update the links…
+                    // Declare the links…
+                    var link = svg.selectAll("path.link")
+                        .data(links, function (d) { return d.target.id; });
+                    // Enter the links.
+                    link.enter().insert("path", "g")
+                        .attr("class", "link")
+
+                        .attr("d", function (d) {
+                            var o = { x: source.x0, y: source.y0 };
+                            return diagonal({ source: o, target: o });
+                        });
+                    // Transition links to their new position.
+                    link.transition()
+                        .duration(duration)
+                    .attr("d", diagonal);
+
+
+                    // Transition exiting nodes to the parent's new position.
+                    link.exit().transition()
+                        .duration(duration)
+                        .attr("d", function (d) {
+                            var o = { x: source.x, y: source.y };
+                            return diagonal({ source: o, target: o });
+                        })
+                        .remove();
+
+                    // Stash the old positions for transition.
+                    nodes.forEach(function (d) {
+                        d.x0 = d.x;
+                        d.y0 = d.y;
+                    });
+                }
+
+                // Toggle children on click.
+                function nodeclick(d) {
+                    if (d.children) {
+                        d._children = d.children;
+                        d.children = null;
+                    } else {
+                        d.children = d._children;
+                        d._children = null;
+                    }
+                    update(d);
+                }
+            }
+          
+
+                  
+                  
+
+            var treeData =
+        {
+            "name": "BU Head",
+            "children": [
+              {
+                  "name": "Manager",
+                  "children": [
+                    {
+                        "name": "Team Lead",
+                         "children": []
+                    },
+                    {
+                        "name": "Team Lead",
+                        "children": []
+                    }
+                  ]
+              },
+              {
+                  "name": "Manager",
+                  "children": []
+              }
+            ]
+        };
+          // load the external data
+
+          $.getJSON("../json/data.json", function(json) {
+        BuildVerticaLTree(json, "#tree");
+            });
+          
+          
+        });
+
+        
+        
+</script>
+    
+
+</head>
+<body class="bg-steel">
+    <div class="app-bar fixed-top darcula" data-role="appbar">
+        
+        <span class="app-bar-divider"></span>
+        <ul class="app-bar-menu">
+            <li class="active"><a href="" class="active">Home</a></li>
+
+            <li>
+                <a href="" class="dropdown-toggle">Audit</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="">View Audit</a></li>
+                    <li><a href="">Export Audit Data</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Usage Statistics</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="">View usage</a></li>
+                    <li><a href="">Export Usage Data</a></li>
+                </ul>
+            <li>
+                <a href="" class="dropdown-toggle">Help</a>
+                <ul class="d-menu" data-role="dropdown">
+
+                    <li><a href="">About</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="app-bar-element place-right">
+            <span class="dropdown-toggle"><span class="mif-cog"></span> User Name</span>
+            <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
+                <h2 class="text-light">Quick settings</h2>
+                <ul class="unstyled-list fg-dark">
+                    <li><a href="" class="fg-white1 fg-hover-yellow">Profile</a></li>
+                    <li><a href="" class="fg-white2 fg-hover-yellow">Security</a></li>
+                    <li><a href="" class="fg-white3 fg-hover-yellow">Exit</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <div class="flex-grid no-responsive-future" style="height: 100%;">
+            <div class="row" style="height: 100%">
+                <div class="cell size-x200" id="cell-sidebar" style="background-color: #71b1d1; height: 100%">
+                    <ul class="sidebar ">
+                        <li><a href="#">
+                            <span></span>
+                            <span class="title"></span>
+                            </a>
+                        </li>
+                        <li ><a href="#">
+                            <span class="mif-apps icon"></span>
+                            <span class="title">Inbox</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-directions-bike icon fg-crimson"></span>
+                            <span class="title">Full Text Search</span>
+                        </a></li>
+                        <li ><a href="#">
+                            <span class="mif-drive-eta icon"></span>
+                            <span class="title">Project Search</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-cloud icon"></span>
+                            <span class="title">Keyword Search</span>
+
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-database icon"></span>
+                            <span class="title">Manage Metadata</span>
+
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-cogs icon"></span>
+                            <span class="title">Manage Taxonomy</span>
+
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-apps icon"></span>
+                            <span class="title">Pre-Import Verification </span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-apps icon"></span>
+                            <span class="title">Bulk Import</span>
+                        </a></li>   
+                        <li><a href="#">
+                            <span class="mif-file-archive icon"></span>
+                            <span class="title">Content Upload</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-apps icon"></span>
+                            <span class="title">Persistant URL Management</span>
+                        </a></li>                        
+                    </ul>
+                </div>
+                <div class="cell auto-size padding20 bg-white" id="cell-content">
+                    <h1 class="text-light center">Repository Browser</h1>
+           
+                    <div id="tree" class="divscroll">
+
+                    </div>
+   
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+    <!-- Stop all vm -->
+    <div data-role="dialog" id="id-start-vm" data-overlay ="true" class="padding20" data-close-button="true" data-type="info" data-close-button="true" >
+            <h3>Are you sure to Stop the selected services ?</h3>
+        
+			 <hr class="thin"/>
+            <div class="form-actions" >
+                <button type="submit" class="button primary" onclick="runPB1();">OK</button>
+                <button type="button" class="button secondary">Cancel</button>
+            </div>        
+    </div>
+    <!-- Stop all vm complete-->    
+	<!-- hour glass div-->
+	<!--<div data-role="preloader" data-type="metro" data-style="dark" id="hglass"></div>-->
+	<!--hour glass complete-->
+</body>
+</html>

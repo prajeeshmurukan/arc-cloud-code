@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4-Dec-2015 8:37:10 PM by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="com.arc.cloud.dao.hib23.hib.codegen.Archiveaudit" table="archiveaudit" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="operationtext" type="string">
+            <column name="operationtext" />
+        </property>
+        <property name="auditedby" type="string">
+            <column name="auditedby" />
+        </property>
+        <property name="audittime" type="date">
+            <column name="audittime" length="13" />
+        </property>
+        <property name="archiveid" type="java.lang.Integer">
+            <column name="archiveid" />
+        </property>
+    </class>
+</hibernate-mapping>

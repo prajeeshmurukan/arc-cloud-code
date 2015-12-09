@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 11-Nov-2015 9:40:26 AM by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="com.arc.cloud.dao.hib2.hib.codegen.Document" table="document" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="increment" />
+        </id>
+        <property name="docid" type="java.lang.Integer">
+            <column name="docid" />
+        </property>
+        <property name="docname" type="string">
+            <column name="docname" />
+        </property>
+        <property name="doctitle" type="string">
+            <column name="doctitle" />
+        </property>
+        <property name="doccreatedt" type="string">
+            <column name="doccreatedt" />
+        </property>
+        <property name="custid" type="java.lang.Integer">
+            <column name="custid" />
+        </property>
+        <property name="bucketid" type="java.lang.Integer">
+            <column name="bucketid" />
+        </property>
+        <property name="txProject" type="string">
+            <column name="tx_project" />
+        </property>
+        <property name="txSubDiv1" type="string">
+            <column name="tx_sub_div1" />
+        </property>
+        <property name="txSubDiv2" type="string">
+            <column name="tx_sub_div2" />
+        </property>
+        <property name="keywords" type="string">
+            <column name="keywords" />
+        </property>
+        <property name="purlurl" type="string">
+            <column name="purlurl" />
+        </property>
+        <property name="metadata" type="string">
+            <column name="metadata" />
+        </property>
+        <property name="orgid" type="java.lang.Integer">
+            <column name="orgid" />
+        </property>
+    </class>
+</hibernate-mapping>

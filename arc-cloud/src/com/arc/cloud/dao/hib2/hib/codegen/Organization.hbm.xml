@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4-Dec-2015 8:37:10 PM by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="com.arc.cloud.dao.hib2.hib.codegen.Organization" table="organization" optimistic-lock="version">
+        <id name="id" type="long">
+            <column name="id" />
+            <generator class="increment" />
+        </id>
+        <property name="orgname" type="string">
+            <column name="orgname" />
+        </property>
+        <property name="orgaddr1" type="string">
+            <column name="orgaddr1" />
+        </property>
+        <property name="orgaddr2" type="string">
+            <column name="orgaddr2" />
+        </property>
+        <property name="orgstate" type="string">
+            <column name="orgstate" />
+        </property>
+        <property name="orgzip" type="string">
+            <column name="orgzip" />
+        </property>
+        <property name="orgcountry" type="string">
+            <column name="orgcountry" />
+        </property>
+        <property name="creditcardno" type="string">
+            <column name="creditcardno" />
+        </property>
+        <property name="creditcardexpdt" type="string">
+            <column name="creditcardexpdt" />
+        </property>
+        <property name="creditcardcvv" type="string">
+            <column name="creditcardcvv" />
+        </property>
+        <property name="orgcode" type="string">
+            <column name="orgcode" />
+        </property>
+        <property name="contactfirstname" type="string">
+            <column name="contactfirstname" />
+        </property>
+        <property name="contactlastname" type="string">
+            <column name="contactlastname" />
+        </property>
+        <property name="contactemail" type="string">
+            <column name="contactemail" />
+        </property>
+        <property name="contactphone" type="string">
+            <column name="contactphone" />
+        </property>
+        <property name="isdeleted" type="java.lang.Boolean">
+            <column name="isdeleted" />
+        </property>
+        <set name="customerses" table="customers" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="orgid" />
+            </key>
+            <one-to-many class="com.arc.cloud.dao.hib2.hib.codegen.Customers" />
+        </set>
+
+        <set name="projecttaxonomies" table="projecttaxonomy" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="orgid" />
+            </key>
+            <one-to-many class="com.arc.cloud.dao.hib2.hib.codegen.Projecttaxonomy" />
+        </set>
+    </class>
+</hibernate-mapping>
